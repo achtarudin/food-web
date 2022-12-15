@@ -9,10 +9,12 @@
     "generate:and:publish": "nuxt generate && firebase deploy --only hosting"
   },
   "devDependencies": {
+    "@types/p5": "^1.4.3",
     "nuxt": "3.0.0"
   },
   "dependencies": {
     "@mdi/font": "^7.0.96",
+    "p5": "^1.5.0",
     "sass": "^1.56.1",
     "vuetify": "^3.0.3"
   }

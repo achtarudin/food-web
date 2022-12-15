@@ -1,23 +1,21 @@
-<script setup>
-
+<script setup lang="ts">
 definePageMeta({
-	sort: 2,
-	tag: 'About',
-	icon: 'mdi-archive-clock',
+	sort: 3,
+	tag: 'Camera',
+	icon: 'mdi-camera',
 	asBottomNavigation: true
 })
 
-const router = useRouter()
 
-const goToIndex = () => {
-	router.push('/')
-}
 </script>
 <template>
 	<div>
-		<v-btn @click="goToIndex">
+		<ClientOnly fallback-tag="span" fallback="Loading comments...">
+			<page-video />
+		</ClientOnly>
+		<v-btn>
 			<v-icon start icon="mdi-account"></v-icon>
-			About Page
+			Camera Page
 			<v-icon end icon="mdi-account"></v-icon>
 		</v-btn>
 	</div>

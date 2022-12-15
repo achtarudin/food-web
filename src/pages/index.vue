@@ -1,4 +1,12 @@
-<script setup>
+<script setup lang="ts">
+// extend PageMeta
+
+definePageMeta({
+	sort: '1',
+	icon: 'mdi-pot-steam',
+	tag: 'Services',
+	asBottomNavigation: true
+})
 
 const router = useRouter()
 
