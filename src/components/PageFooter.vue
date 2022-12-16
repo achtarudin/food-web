@@ -6,8 +6,6 @@ const router = useRouter()
 
 const bottomNavs = computed(() =>
 {
-	console.log(router.options.routes);
-
 	return router.options.routes
 		.filter((route) => route.meta?.asBottomNavigation as boolean)
 		.sort((a, b) => (a.meta?.sort as number) - (b.meta?.sort as number))

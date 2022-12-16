@@ -8,6 +8,7 @@ useHead({
 		}
 	]
 })
+const sizePage = useSizePage()
 
 
 let p5Ref = ref<HTMLElement | null>(null)
@@ -15,6 +16,7 @@ let p5Video = ref<p5.Element | null>(null)
 let resultFace = ref<any>(null)
 let detections = ref<any>([])
 let p5Intance = ref<p5 | null>(null)
+
 
 const faceReady = () =>
 {
@@ -31,9 +33,13 @@ const gotFace = (error: any, result: any) =>
 		return
 	}
 
-	detections.value = result
 
-	resultFace.value.detect(gotFace)
+	if (resultFace.value) {
+		console.log(resultFace.value);
+		detections.value = result
+		resultFace.value.detect(gotFace)
+	}
+
 }
 
 const drawBox = (detectionFace: any[]) =>
@@ -74,12 +80,14 @@ onUnmounted(() =>
 	p5Ref.value?.remove()
 	p5Video.value?.remove()
 	p5Intance.value?.remove()
+	resultFace.value = null
+
 })
 
 onMounted(() =>
 {
 	const WIDTH_CANVAS = p5Ref.value?.parentElement?.offsetWidth as number
-	const HEIGTH_CANVAS = 400
+	const HEIGTH_CANVAS = WIDTH_CANVAS
 	const FACE_OPTIONS = {
 		withLandmarks: true,
 		withDescriptors: false,
@@ -105,20 +113,22 @@ onMounted(() =>
 		}
 		p.draw = () =>
 		{
+			p.clear(0,0,0,0);
+
+			p.translate(p.width, 0);
+			p.scale(-1, 1);
 			p.image(p5Video.value as p5.Element, 0, 0, p.width, p.height);
 			if (detections.value.length > 0)
 			{
 				drawBox(detections.value)
 				drawLandmark(detections.value)
-
-
 			}
 		}
 	}, p5Ref.value as HTMLElement)
 })
 </script>
 <template>
-	<div class="w-100">
+	<div class="w-100" :style="{ width: sizePage.width}">
 		<div ref="p5Ref"></div>
 	</div>
 </template>

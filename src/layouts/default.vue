@@ -3,6 +3,8 @@ import { useDisplay } from 'vuetify'
 
 const MAX_WIDTH = 600;
 
+const sizePage = useSizePage()
+
 const windowSize = reactive({
 	width: 0,
 	height: 0
@@ -22,6 +24,14 @@ const widthtPage = computed(() => {
 const onResize = () => {
 	windowSize.width = window.innerWidth
 	windowSize.height = window.innerHeight
+
+	let appLayout = document.getElementById('app-layout');
+	let widthLayout = appLayout ? appLayout.offsetWidth : 0;
+
+	console.log(widthLayout, widthLayout - 20);
+	sizePage.value.width = widthLayout
+	sizePage.value.height = window.innerHeight
+
 }
 
 const runServiceWorker = () => {
@@ -32,7 +42,7 @@ const runServiceWorker = () => {
 onMounted(() => {
 	for (const key in display) {
 	}
-	runServiceWorker()
+	// runServiceWorker()
 	onResize()
 });
 </script>
