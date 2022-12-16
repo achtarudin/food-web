@@ -8,8 +8,7 @@ useHead({
 		}
 	]
 })
-const sizePage = useSizePage()
-
+const { $p5 } = useNuxtApp()
 
 let p5Ref = ref<HTMLElement | null>(null)
 let p5Video = ref<p5.Element | null>(null)
@@ -21,7 +20,6 @@ let p5Intance = ref<p5 | null>(null)
 const faceReady = () =>
 {
 	console.log("faceReady!");
-	console.log(resultFace.value);
 	resultFace.value.detect(gotFace)
 }
 
@@ -34,8 +32,8 @@ const gotFace = (error: any, result: any) =>
 	}
 
 
-	if (resultFace.value) {
-		console.log(resultFace.value);
+	if (resultFace.value && result)
+	{
 		detections.value = result
 		resultFace.value.detect(gotFace)
 	}
@@ -47,14 +45,14 @@ const drawBox = (detectionFace: any[]) =>
 	const p = p5Intance.value as p5
 	for (let index = 0; index < detectionFace.length; index++)
 	{
-		let x = detectionFace[index].alignedRect._box._x
-		let y = detectionFace[index].alignedRect._box._y
-		let width = detectionFace[index].alignedRect._box._width
-		let height = detectionFace[index].alignedRect._box._height
+		let { _x, _y, _width, _height } = detectionFace[index].alignedRect._box;
+
+		console.log(_x, _y, _width, _height);
+
 		p.stroke(44, 169, 225)
 		p.strokeWeight(2)
 		p.noFill()
-		p.rect(x, y, width, height)
+		p.rect(_x, _y, _width, _height)
 	}
 }
 
@@ -63,14 +61,15 @@ const drawLandmark = (detectionFace: any[]) =>
 	const p = p5Intance.value as p5
 	for (let index = 0; index < detectionFace.length; index++)
 	{
-		let points= detectionFace[index].landmarks.positions
-		for (let i = 0; i < points.length; i++)
+		let { positions } = detectionFace[index].landmarks
+
+		for (let i = 0; i < positions.length; i++)
 		{
-			let x = points[i]._x
-			let y = points[i]._y
+			let { _x, _y } = positions[i];
+
 			p.stroke(44, 169, 225)
 			p.strokeWeight(2)
-			p.point(x, y)
+			p.point(_x, _y)
 		}
 	}
 }
@@ -81,6 +80,7 @@ onUnmounted(() =>
 	p5Video.value?.remove()
 	p5Intance.value?.remove()
 	resultFace.value = null
+	detections.value = []
 
 })
 
@@ -95,7 +95,7 @@ onMounted(() =>
 		minConfidence: 0.5,
 	}
 
-	p5Intance.value = new p5((p: p5) =>
+	p5Intance.value = new $p5((p: p5) =>
 	{
 		p.setup = () =>
 		{
@@ -104,7 +104,7 @@ onMounted(() =>
 			p5Video.value.size(p.width, p.height);
 			p5Video.value.hide();
 
-			if (window.ml5)
+			if (process.client && window.ml5)
 			{
 				const ML5 = window.ml5 as any
 				resultFace.value = ML5.faceApi(p5Video.value, FACE_OPTIONS, faceReady)
@@ -113,8 +113,7 @@ onMounted(() =>
 		}
 		p.draw = () =>
 		{
-			p.clear(0,0,0,0);
-
+			p.clear(0, 0, 0, 0);
 			p.translate(p.width, 0);
 			p.scale(-1, 1);
 			p.image(p5Video.value as p5.Element, 0, 0, p.width, p.height);
@@ -128,7 +127,7 @@ onMounted(() =>
 })
 </script>
 <template>
-	<div class="w-100" :style="{ width: sizePage.width}">
+	<div class="w-100">
 		<div ref="p5Ref"></div>
 	</div>
 </template>

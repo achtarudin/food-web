@@ -27,8 +27,6 @@ const onResize = () => {
 
 	let appLayout = document.getElementById('app-layout');
 	let widthLayout = appLayout ? appLayout.offsetWidth : 0;
-
-	console.log(widthLayout, widthLayout - 20);
 	sizePage.value.width = widthLayout
 	sizePage.value.height = window.innerHeight
 
